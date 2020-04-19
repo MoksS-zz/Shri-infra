@@ -2,17 +2,17 @@ const axios = require("axios");
 const { inst } = require("./axios-inst");
 const { builds, agents } = require("./agent&buildList");
 
-const buildCheck = async (i = 0) => {
+const buildCheck = async (i = 0, limit = 25) => {
   if (i === 3) {
     console.log("bd не работает");
     process.exit(1);
   }
   try {
-    const newbuild = await inst.get("/build/list");
-    const buildList = newbuild.data.data;
+    const newbuild = await inst.get(`/build/list?limit=${limit}`);
+    const buildList = newbuild.data.data.reverse();
 
     for (const build of buildList) {
-      if (!builds.has(build.id) && build.start === undefined) {
+      if (!builds.has(build.id) && build.status === "Waiting") {
         builds.set(build.id, build);
       }
     }
@@ -27,8 +27,10 @@ const buildCheck = async (i = 0) => {
 const sendBuildAgent = async () => {
   try {
     const freeAgent = [...agents.values()].filter((e) => e.work === false);
+
     let i = 0;
-    console.log("проверка своодных агентов", freeAgent);
+    // console.log("проверка своодных агентов", freeAgent);
+    // console.log("проверка оставшихся билдов", builds);
     for await (const build of builds) {
       if (i >= freeAgent.length) break;
       const agent = freeAgent[i++];
@@ -37,32 +39,34 @@ const sendBuildAgent = async () => {
         `http://${agent.host}:${agent.port}/build`,
         {
           id: build[1].id,
-          gitUrl: `https://github.com/${process.conf.repoName}.git`,
+          repoName: process.conf.repoName,
           commitHash: build[1].commitHash,
           branchName: build[1].branchName,
-          buildCommand: process.conf.buildCommand,
+          command: process.conf.buildCommand,
         }
       );
 
       if (sendBuild.data && sendBuild.data.status) {
-        const res = inst.post({
+        await inst.post("build/start", {
           buildId: build[1].id,
           dateTime: new Date().toISOString(),
         });
 
-        // builds.delete(build[0]);
-        // agent.work = true;
+        builds.delete(build[0]);
+        agent.work = true;
+        agent.duration = Date.now();
       }
     }
 
     setTimeout(sendBuildAgent, 5000);
   } catch (error) {
     console.log(error);
+    setTimeout(sendBuildAgent, 5000);
   }
 };
 
 const startCi = () => {
-  setTimeout(buildCheck, 3000);
+  setTimeout(() => buildCheck(0, 100), 3000);
   setTimeout(sendBuildAgent, 5000);
 };
 

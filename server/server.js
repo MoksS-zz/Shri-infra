@@ -4,11 +4,11 @@ const router = require("./router/agent");
 const { inst } = require("./utils/axios-inst");
 const { startCi } = require("./utils/startBuild");
 
-const getRep = async (i = 1) => {
+const getConf = async (i = 1) => {
   console.log(i);
   try {
     if (i === 3) {
-      console.error("неудалось зарегистрировать сервер");
+      console.error("неудалось получить настройки");
       return process.exit(1);
     }
 
@@ -17,11 +17,11 @@ const getRep = async (i = 1) => {
     console.log(process.conf);
   } catch (error) {
     console.log(error);
-    getRep(++i);
+    getConf(++i);
   }
 };
 
-getRep();
+getConf();
 
 const app = express();
 
