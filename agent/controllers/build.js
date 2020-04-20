@@ -23,14 +23,14 @@ const build = async (req, res) => {
   let success = false;
 
   try {
-    const resultClone = await git.clone(body.repoName, body.commitHash);
+    resultBuild = await git.clone(body.repoName, body.commitHash);
 
-    if (resultClone.code !== 0) {
+    if (resultBuild.code !== 0) {
       return await inst.post("/notify-build-result", {
         success,
         buildId: body.id,
         agentId: process.conf.agentId,
-        buildLog: resultClone.stdout + resultClone.stderr,
+        buildLog: resultBuild.stdout + resultBuild.stderr,
       });
     }
 
