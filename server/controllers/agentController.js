@@ -11,10 +11,10 @@ const sendResultBuild = async (req, res) => {
 
   try {
     const agent = agents.get(body.agentId);
-    console.log("AGENT", agent);
+
     agent.work = false;
     const duration = Date.now() - agent.duration;
-    console.log(duration);
+
     const response = {
       success: body.success,
       duration,
@@ -22,7 +22,6 @@ const sendResultBuild = async (req, res) => {
       buildLog: body.buildLog,
     };
 
-    console.log(response);
     await inst.post("/build/finish", response);
 
     return res.json({ success: true });

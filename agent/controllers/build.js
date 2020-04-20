@@ -1,5 +1,5 @@
 const git = require("../utils/git");
-const { startCommand } = require("../utils/runCommand");
+const { runCommand } = require("../utils/runCommand");
 const { inst } = require("../utils/axios-inst");
 
 const retryPost = async (fn, i = 1, ...args) => {
@@ -8,7 +8,6 @@ const retryPost = async (fn, i = 1, ...args) => {
     process.exit(1);
   }
 
-  console.log("I работает", i);
   try {
     await fn(...args);
   } catch (error) {
@@ -17,51 +16,49 @@ const retryPost = async (fn, i = 1, ...args) => {
 };
 
 const build = async (req, res) => {
-  console.log(req.body);
   const { body } = req;
   res.json({ status: true });
 
   let resultBuild;
+  let success = false;
 
   try {
     const resultClone = await git.clone(body.repoName, body.commitHash);
 
     if (resultClone.code !== 0) {
       return await inst.post("/notify-build-result", {
-        success: false,
+        success,
         buildId: body.id,
         agentId: process.conf.agentId,
         buildLog: resultClone.stdout + resultClone.stderr,
       });
     }
 
-    resultBuild = await startCommand(body.command);
+    resultBuild = await runCommand(body.command);
 
     if (resultBuild.code === 0) {
+      success = true;
       return inst.post("/notify-build-result", {
-        success: true,
+        success,
         buildId: body.id,
         agentId: process.conf.agentId,
-        buildLog: resultBuild.stdout + resultBuild.stderr,
+        buildLog: resultBuild.logs,
       });
     }
-  } catch (error) {
-    console.log(error);
-  }
 
-  try {
     await inst.post("/notify-build-result", {
-      success: false,
+      success,
       buildId: body.id,
       agentId: process.conf.agentId,
-      buildLog: resultBuild.stdout + resultBuild.stderr,
+      buildLog: resultBuild.logs,
     });
   } catch (error) {
+    console.log(error);
     await retryPost(inst.post, 0, "/notify-build-result", {
-      success: false,
+      success,
       buildId: body.id,
       agentId: process.conf.agentId,
-      buildLog: resultBuild.stdout + resultBuild.stderr,
+      buildLog: resultBuild.logs,
     });
   }
 };

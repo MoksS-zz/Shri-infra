@@ -31,7 +31,7 @@ const buildCheck = async (i = 0, limit = 50) => {
     setTimeout(buildCheck, 3000);
   } catch (error) {
     console.log(error.toString());
-    setTimeout(() => buildCheck(++i), 10000);
+    setTimeout(() => buildCheck(++i), 30000);
   }
 };
 
@@ -47,7 +47,6 @@ const sendBuildAgent = async () => {
       const agent = freeAgent[i++];
 
       if (build[1].status === "Waiting") {
-        console.log("Работает!!!");
         await inst.post("build/start", {
           buildId: build[1].id,
           dateTime: new Date().toISOString(),
@@ -93,7 +92,7 @@ const sendBuildAgent = async () => {
 const removeFallenAgent = () => {
   for (const agent of agents) {
     if (agent[1].work && Date.now() - agent[1].duration > 10000) {
-      console.log("WORK");
+      console.log("Удаление зависших билдов");
       builds.set(agent[1].currentBuild.id, agent[1].currentBuild);
       agents.delete(agent[1].id);
     }

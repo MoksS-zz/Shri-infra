@@ -1,28 +1,35 @@
-const { exec } = require("child_process");
-const { promisify } = require("util");
+const { spawn } = require("child_process");
 const path = require("path");
 
-const execAsync = promisify(exec);
+const runCommand = (cmd) => {
+  console.log("start build", cmd);
 
-const startCommand = async (command) => {
-  const buildsDir = path.join(__dirname, "../builds");
+  return new Promise((resolve) => {
+    const cwd = path.join(__dirname, "../builds");
+    let logs = "";
 
-  const options = { cwd: buildsDir };
+    const child = spawn(cmd, [], {
+      cwd,
+      shell: true,
+      stdio: "pipe",
+      env: { FORCE_COLOR: 3, ...process.env },
+    });
 
-  console.log("start build", command);
-
-  try {
-    const { stdout, stderr } = await execAsync(command, options);
-    return { code: 0, stdout, stderr };
-  } catch (e) {
-    return {
-      code: e.code,
-      stdout: e.stdout,
-      stderr: e.stderr ? e.stderr : e.toString(),
-    };
-  }
+    child.stderr.on("data", (data) => {
+      logs += data.toString();
+    });
+    child.stdout.on("data", (data) => {
+      logs += data.toString();
+    });
+    child.on("exit", (exitCode) => {
+      if (exitCode === 0) {
+        return resolve({ logs, code: 0 });
+      }
+      return resolve({ logs, code: exitCode });
+    });
+  });
 };
 
 module.exports = {
-  startCommand,
+  runCommand,
 };
