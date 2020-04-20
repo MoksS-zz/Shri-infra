@@ -19,11 +19,10 @@ app.listen(config.port, async (err) => {
   }
   console.log("agent listen port", config.port);
 
-  const result = await registerAgent();
-  if (result.status) {
-    console.log("Агент зарегестрирован");
-  } else {
-    console.error("неудача сервер не зарегистрирован");
+  try {
+    await registerAgent();
+  } catch (error) {
+    console.error("неудача, сервер не зарегистрирован");
     // оставил это для будуще, вдруг какие то исключения приходить будут и как то их обробатывать
     process.exit(1);
   }

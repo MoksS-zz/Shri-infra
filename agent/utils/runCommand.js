@@ -7,7 +7,7 @@ const execAsync = promisify(exec);
 const startCommand = async (command) => {
   const buildsDir = path.join(__dirname, "../builds");
 
-  const options = { cwd: buildsDir, stdio: "inherit" };
+  const options = { cwd: buildsDir };
 
   console.log("start build", command);
 

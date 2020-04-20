@@ -10,16 +10,16 @@ const registerAgent = async (i = 1) => {
     return process.exit(1);
   }
   try {
-    const result = await inst.post("/notify-agent", {
+    await inst.post("/notify-agent", {
       id: process.conf.agentId,
       work: false,
       port: setting.port,
       host: ip,
     });
 
-    return result.data;
+    console.log("Успех, praise the suuuuuuuuuun \\[T]/");
+    console.log("Удалось подключится к серверу");
   } catch (error) {
-    console.log(error);
     setTimeout(() => {
       registerAgent(++i);
     }, 2000);
