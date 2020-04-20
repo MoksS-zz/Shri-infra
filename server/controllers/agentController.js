@@ -8,19 +8,22 @@ const registerAgent = async (req, res) => {
 
 const sendResultBuild = async (req, res) => {
   const { body } = req;
-  console.log(req.body);
 
   try {
     const agent = agents.get(body.agentId);
+    console.log("AGENT", agent);
     agent.work = false;
     const duration = Date.now() - agent.duration;
-
-    await inst.post("/build/finish", {
+    console.log(duration);
+    const response = {
       success: body.success,
       duration,
       buildId: body.buildId,
       buildLog: body.buildLog,
-    });
+    };
+
+    console.log(response);
+    await inst.post("/build/finish", response);
 
     return res.json({ success: true });
   } catch (error) {
