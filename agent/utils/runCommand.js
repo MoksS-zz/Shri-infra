@@ -2,7 +2,7 @@ const { spawn } = require("child_process");
 const path = require("path");
 
 const runCommand = (cmd) => {
-  console.log("start build", cmd);
+  console.log("start build command =====> \n", cmd);
 
   return new Promise((resolve) => {
     const cwd = path.join(__dirname, "../builds");
