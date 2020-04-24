@@ -30,7 +30,7 @@ const buildCheck = async (i = 0, limit = 50) => {
 
     setTimeout(buildCheck, 3000);
   } catch (error) {
-    console.log(error.toString());
+    console.log(error);
     setTimeout(() => buildCheck(++i), 30000);
   }
 };
@@ -91,7 +91,7 @@ const sendBuildAgent = async () => {
 
 const removeFallenAgent = () => {
   for (const agent of agents) {
-    if (agent[1].work && Date.now() - agent[1].duration > 10000) {
+    if (agent[1].work && Date.now() - agent[1].duration > 30000) {
       console.log("Удаление зависших билдов");
       builds.set(agent[1].currentBuild.id, agent[1].currentBuild);
       agents.delete(agent[1].id);
