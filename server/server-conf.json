@@ -1,5 +1,6 @@
 {
   "port": 3045,
   "apiBaseUrl": "https://hw.shri.yandex/api",
-  "apiToken": "Ваш Токен Для авторизации"
+  "apiToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjQxODY5MDY5IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6Ik1va3NTIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoiTW9rc1NodXZAeWFuZGV4LnJ1IiwidXJuOmdpdGh1YjpuYW1lIjoiTWFrc2ltIFNodXZhZXYiLCJ1cm46Z2l0aHViOnVybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vdXNlcnMvTW9rc1MiLCJuYmYiOjE1ODY2ODg5OTksImV4cCI6MTU4OTI4MDk5OSwiaXNzIjoiU2hyaS1Ib21ld29yayIsImF1ZCI6IlNocmktSG9tZXdvcmsifQ.J2dQcLUBAgWNkkMjYUyKadJH6CzLlGmeEU-4xQotrEc",
+  "clietntServer": "http://localhost:3000"
 }
