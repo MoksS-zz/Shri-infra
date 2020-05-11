@@ -21,3 +21,4 @@ app.listen(config.port, (err) => {
 });
 
 // setInterval(() => console.log(agents), 2000);
+// sudo docker run -p 3046:3046 --network=host
